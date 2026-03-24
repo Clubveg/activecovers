@@ -1,4 +1,17 @@
+"use client";
+import { useState } from "react";
+
+// Split to prevent scraping — never stored as a plain string
+const phoneParts = ["1300", "50", "26", "50"];
+const emailParts = ["info", "activecovers", "com.au"];
+
 export default function Contact() {
+  const [phoneRevealed, setPhoneRevealed] = useState(false);
+  const [emailRevealed, setEmailRevealed] = useState(false);
+
+  const phone = phoneParts.join(" ");
+  const email = `${emailParts[0]}@${emailParts[1]}.${emailParts[2]}`;
+
   return (
     <section id="contact" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -20,9 +33,13 @@ export default function Contact() {
 
             {/* Contact details */}
             <div className="flex flex-col gap-5">
-              <a
-                href="tel:1300502650"
-                className="flex items-center gap-4 group"
+              {/* Phone — click to reveal */}
+              <div
+                className="flex items-center gap-4 group cursor-pointer"
+                onClick={() => {
+                  if (phoneRevealed) window.location.href = `tel:${phone.replace(/\s/g, "")}`;
+                  else setPhoneRevealed(true);
+                }}
               >
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[#fcaf3b]/10 group-hover:bg-[#fcaf3b]/20 transition-colors">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fcaf3b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -31,15 +48,24 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide">Phone</p>
-                  <p className="font-bold text-[#0f1117] group-hover:text-[#fcaf3b] transition-colors">
-                    1300 50 26 50
-                  </p>
+                  {phoneRevealed ? (
+                    <p className="font-bold text-[#fcaf3b] transition-colors">{phone}</p>
+                  ) : (
+                    <p className="font-bold text-[#0f1117] group-hover:text-[#fcaf3b] transition-colors flex items-center gap-2">
+                      1300 50 •• ••
+                      <span className="text-xs font-normal text-gray-400">(tap to reveal)</span>
+                    </p>
+                  )}
                 </div>
-              </a>
+              </div>
 
-              <a
-                href="mailto:info@activecovers.com.au"
-                className="flex items-center gap-4 group"
+              {/* Email — click to reveal */}
+              <div
+                className="flex items-center gap-4 group cursor-pointer"
+                onClick={() => {
+                  if (emailRevealed) window.location.href = `mailto:${email}`;
+                  else setEmailRevealed(true);
+                }}
               >
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[#fcaf3b]/10 group-hover:bg-[#fcaf3b]/20 transition-colors">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fcaf3b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -49,11 +75,16 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide">Email</p>
-                  <p className="font-bold text-[#0f1117] group-hover:text-[#fcaf3b] transition-colors">
-                    info@activecovers.com.au
-                  </p>
+                  {emailRevealed ? (
+                    <p className="font-bold text-[#fcaf3b] transition-colors">{email}</p>
+                  ) : (
+                    <p className="font-bold text-[#0f1117] group-hover:text-[#fcaf3b] transition-colors flex items-center gap-2">
+                      info@active•••••••
+                      <span className="text-xs font-normal text-gray-400">(tap to reveal)</span>
+                    </p>
+                  )}
                 </div>
-              </a>
+              </div>
 
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[#fcaf3b]/10">
