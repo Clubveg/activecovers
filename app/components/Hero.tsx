@@ -71,11 +71,11 @@ export default function Hero() {
 
         {/* TEXT — positioned in lower-left, above the video */}
         <div
-          className="absolute inset-x-0 bottom-0 flex flex-col justify-end"
-          style={{ top: "100px", padding: "0 0 80px 0" }}
+          className="absolute inset-0 flex flex-col justify-end overflow-hidden"
+          style={{ paddingTop: "110px", paddingBottom: "60px" }}
         >
-          <div className="max-w-7xl mx-auto px-8 w-full">
-            <div className="max-w-2xl flex flex-col gap-6">
+          <div className="max-w-7xl mx-auto px-6 w-full">
+            <div className="max-w-2xl flex flex-col gap-4">
 
               <div className="inline-flex items-center gap-2 w-fit">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#fcaf3b]" />
@@ -86,7 +86,7 @@ export default function Hero() {
 
               <h1
                 className="font-bold leading-[1.05] tracking-tight text-white"
-                style={{ fontSize: "clamp(2rem, 5.5vw, 5rem)" }}
+                style={{ fontSize: "clamp(1.75rem, 5vw, 5rem)" }}
               >
                 Transform Your<br />
                 Backyard With<br />
@@ -94,7 +94,7 @@ export default function Hero() {
                 Swim Spa Cover
               </h1>
 
-              <p className="text-lg leading-relaxed text-white/70 max-w-lg">
+              <p className="text-sm md:text-lg leading-relaxed text-white/70 max-w-lg">
                 Hydraulic bi-fold covers custom-made for your swim spa.
                 5-year warranty, 4-week turnaround, personally managed
                 from start to finish.
