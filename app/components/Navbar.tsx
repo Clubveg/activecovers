@@ -43,6 +43,12 @@ export default function Navbar() {
               {item}
             </a>
           ))}
+          <a
+            href="/finance"
+            className="text-sm font-medium text-[#fcaf3b] hover:text-white transition-colors"
+          >
+            Finance
+          </a>
         </nav>
 
         {/* Right side */}
@@ -88,6 +94,13 @@ export default function Navbar() {
               {item}
             </a>
           ))}
+          <a
+            href="/finance"
+            className="text-[#fcaf3b] hover:text-white font-medium text-lg"
+            onClick={() => setMenuOpen(false)}
+          >
+            Finance
+          </a>
           <a
             href="tel:1300502650"
             className="text-[#fcaf3b] font-medium text-lg"
