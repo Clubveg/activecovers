@@ -72,7 +72,7 @@ export default function Hero() {
         {/* TEXT — positioned in lower-left, above the video */}
         <div
           className="absolute inset-x-0 bottom-0 flex flex-col justify-end"
-          style={{ top: "72px", padding: "0 0 80px 0" }}
+          style={{ top: "100px", padding: "0 0 80px 0" }}
         >
           <div className="max-w-7xl mx-auto px-8 w-full">
             <div className="max-w-2xl flex flex-col gap-6">
