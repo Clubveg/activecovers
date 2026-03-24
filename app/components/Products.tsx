@@ -3,6 +3,13 @@
 import { useState } from "react";
 import Image from "next/image";
 
+const slidingImages = [
+  "/sliding-1.jpg",
+  "/sliding-2.jpg",
+  "/sliding-3.jpg",
+  "/sliding-4.jpg",
+];
+
 const bifoldImages = [
   "/bifold-1.jpg",
   "/bifold-2.jpg",
@@ -44,9 +51,12 @@ const sliding = {
 
 export default function Products() {
   const [activeImg, setActiveImg] = useState(0);
+  const [activeSlidingImg, setActiveSlidingImg] = useState(0);
 
   const prev = () => setActiveImg((i) => (i - 1 + bifoldImages.length) % bifoldImages.length);
   const next = () => setActiveImg((i) => (i + 1) % bifoldImages.length);
+  const prevSliding = () => setActiveSlidingImg((i) => (i - 1 + slidingImages.length) % slidingImages.length);
+  const nextSliding = () => setActiveSlidingImg((i) => (i + 1) % slidingImages.length);
 
   return (
     <section id="products" className="py-24 bg-white">
@@ -156,14 +166,45 @@ export default function Products() {
           <div className="group relative rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all hover:shadow-2xl hover:-translate-y-1 bg-[#f8f9fa]">
             <div className="h-1.5 w-full bg-[#64748b]" />
 
-            {/* Photo placeholder */}
-            <div className="relative w-full aspect-video bg-[#1a1f2e] flex flex-col items-center justify-center gap-3">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" className="text-white/20">
-                <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" />
-                <circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M21 15l-5-5L5 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span className="text-white/40 text-sm font-medium tracking-wide">Photos Coming Soon</span>
+            {/* Sliding Image Gallery */}
+            <div className="relative w-full aspect-video bg-gray-200 overflow-hidden">
+              <Image
+                src={slidingImages[activeSlidingImg]}
+                alt={`Sliding Cover ${activeSlidingImg + 1}`}
+                fill
+                className="object-cover transition-opacity duration-300"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <button
+                onClick={prevSliding}
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all"
+                aria-label="Previous image"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <button
+                onClick={nextSliding}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all"
+                aria-label="Next image"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <div className="absolute bottom-3 right-3 bg-black/50 text-white text-xs px-2.5 py-1 rounded-full">
+                {activeSlidingImg + 1} / {slidingImages.length}
+              </div>
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                {slidingImages.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveSlidingImg(i)}
+                    className={`w-1.5 h-1.5 rounded-full transition-all ${i === activeSlidingImg ? "bg-white scale-125" : "bg-white/50"}`}
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="p-8 md:p-10 flex flex-col gap-6">
