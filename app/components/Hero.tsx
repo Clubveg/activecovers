@@ -86,7 +86,7 @@ export default function Hero() {
 
               <h1
                 className="font-bold leading-[1.05] tracking-tight text-white"
-                style={{ fontSize: "clamp(3rem, 5.5vw, 5rem)" }}
+                style={{ fontSize: "clamp(2rem, 5.5vw, 5rem)" }}
               >
                 Transform Your<br />
                 Backyard With<br />
