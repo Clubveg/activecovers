@@ -30,9 +30,9 @@ const reasons = [
     icon: "👷",
   },
   {
-    title: "Fast 4-Week Turnaround",
+    title: "Fast 6-Week Turnaround",
     description:
-      "We know you can't wait to enjoy your spa. Our efficient Sydney manufacturing gets your cover to you in just 4 weeks.",
+      "We know you can't wait to enjoy your spa. Our efficient Sydney manufacturing gets your cover to you in just 6 weeks.",
     icon: "📅",
   },
 ];

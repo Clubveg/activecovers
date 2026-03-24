@@ -12,7 +12,7 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "Active Covers Australia | Premium Hydraulic Swim Spa Covers",
   description:
-    "Australia's leading manufacturer of hydraulic swim spa covers. Custom-made, 5-year warranty, 4-week turnaround. Family owned since 1992.",
+    "Australia's leading manufacturer of hydraulic swim spa covers. Custom-made, 5-year warranty, 6-week turnaround. Family owned since 1992.",
 };
 
 export default function RootLayout({

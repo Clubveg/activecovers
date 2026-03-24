@@ -26,7 +26,7 @@ const stats = [
         <path d="M12 6v6l4 2" />
       </svg>
     ),
-    value: "4-Week Turnaround",
+    value: "6-Week Turnaround",
     label: "From order to install",
   },
   {
