@@ -4,12 +4,12 @@ import { useState } from "react";
 import Image from "next/image";
 
 const bifoldImages = [
-  "/products/bifold-1.jpg",
-  "/products/bifold-2.jpg",
-  "/products/bifold-3.jpg",
-  "/products/bifold-4.jpg",
-  "/products/bifold-5.jpg",
-  "/products/bifold-6.jpg",
+  "/bifold-1.jpg",
+  "/bifold-2.jpg",
+  "/bifold-3.jpg",
+  "/bifold-4.jpg",
+  "/bifold-5.jpg",
+  "/bifold-6.jpg",
 ];
 
 const bifold = {
@@ -19,10 +19,10 @@ const bifold = {
     "Our signature product. The bi-fold design opens effortlessly with a hydraulic assist, folding neatly back to give you full, unobstructed access to your swim spa — while blending seamlessly into your deck.",
   features: [
     "Hydraulic gas strut mechanism",
-    "Available in 4.5m × 2.3m and 6.0m × 2.3m",
+    "Suitable for Spas and Pools",
     "Custom sizing available",
     "Flush-fit deck integration",
-    "Low maintenance aluminium frame",
+    "Low maintenance Hot Dip Galvanised steel",
     "All-weather construction",
   ],
 };
