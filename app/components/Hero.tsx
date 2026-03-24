@@ -71,7 +71,7 @@ export default function Hero() {
 
         {/* TEXT — positioned in lower-left, above the video */}
         <div
-          className="absolute inset-0 flex flex-col justify-start md:justify-end overflow-hidden"
+          className="hero-text-wrapper absolute inset-0 flex flex-col justify-start md:justify-end overflow-hidden"
           style={{ paddingTop: "108px", paddingBottom: "60px" }}
         >
           <div className="max-w-7xl mx-auto px-6 w-full">
@@ -120,7 +120,7 @@ export default function Hero() {
                 </a>
               </div>
 
-              <div className="flex gap-10 pt-2">
+              <div className="hero-stats flex gap-10 pt-2">
                 {[
                   { value: "30+", label: "Years Experience" },
                   { value: "5yr", label: "Warranty" },
