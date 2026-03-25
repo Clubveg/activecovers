@@ -3,11 +3,9 @@
   "configurations": [
     {
       "name": "activecovers",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "cwd": "/Users/sammytee/activecovers",
-      "port": 3000,
-      "autoPort": true
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "cd /Users/sammytee/activecovers && npx next dev -p 3001"],
+      "port": 3001
     }
   ]
 }
