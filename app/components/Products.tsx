@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 const slidingImages = [
   "/sliding-1.jpg",
@@ -63,7 +64,13 @@ export default function Products() {
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Header */}
-        <div className="mb-16 max-w-xl">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
+          className="mb-16 max-w-xl"
+        >
           <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#fcaf3b] mb-3">
             Our Products
           </p>
@@ -76,13 +83,19 @@ export default function Products() {
             Every cover is custom-manufactured at our Sydney facility and
             installed by our expert team.
           </p>
-        </div>
+        </motion.div>
 
         {/* Cards */}
         <div className="grid md:grid-cols-2 gap-8">
 
           {/* ── Bi-Fold Card ── */}
-          <div className="group relative rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all hover:shadow-2xl hover:-translate-y-1 bg-[#f8f9fa]">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
+            className="group relative rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all hover:shadow-2xl hover:-translate-y-1 bg-[#f8f9fa]"
+          >
             <div className="h-1.5 w-full bg-[#fcaf3b]" />
 
             {/* Image Gallery */}
@@ -160,10 +173,16 @@ export default function Products() {
                 </a>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* ── Sliding Cover Card ── */}
-          <div className="group relative rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all hover:shadow-2xl hover:-translate-y-1 bg-[#f8f9fa]">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.21, 0.47, 0.32, 0.98] }}
+            className="group relative rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all hover:shadow-2xl hover:-translate-y-1 bg-[#f8f9fa]"
+          >
             <div className="h-1.5 w-full bg-[#64748b]" />
 
             {/* Sliding Image Gallery */}
@@ -235,7 +254,7 @@ export default function Products() {
                 </a>
               </div>
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </div>

@@ -1,3 +1,6 @@
+"use client";
+import { motion } from "framer-motion";
+
 const reasons = [
   {
     title: "Custom Made for Your Spa",
@@ -46,22 +49,32 @@ export default function WhyUs() {
     >
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="mb-16 max-w-xl">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
+          className="mb-16 max-w-xl"
+        >
           <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#fcaf3b] mb-3">
             Why Active Covers
           </p>
-          <h2 className="font-display font-bold text-4xl md:text-5xl text-white leading-tight">
+          <h2 className="font-bold text-4xl md:text-5xl text-white leading-tight">
             The Details That
             <br />
             Make the Difference
           </h2>
-        </div>
+        </motion.div>
 
         {/* Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {reasons.map((r) => (
-            <div
+          {reasons.map((r, i) => (
+            <motion.div
               key={r.title}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
               className="group rounded-2xl p-8 border transition-all hover:border-[#fcaf3b]/30 hover:-translate-y-0.5"
               style={{
                 background: "#1a1f2e",
@@ -75,7 +88,7 @@ export default function WhyUs() {
               <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
                 {r.description}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
 

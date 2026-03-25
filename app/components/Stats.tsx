@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 const stats = [
   {
     icon: (
@@ -56,14 +60,21 @@ export default function Stats() {
     <section style={{ background: "#fcaf3b" }}>
       <div className="max-w-7xl mx-auto px-6 py-6">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {stats.map((s) => (
-            <div key={s.value} className="flex items-center gap-3 py-2">
+          {stats.map((s, i) => (
+            <motion.div
+              key={s.value}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.4, delay: i * 0.08, ease: "easeOut" }}
+              className="flex items-center gap-3 py-2"
+            >
               <div style={{ color: "#0f1117", opacity: 0.7 }}>{s.icon}</div>
               <div>
-                <p className="font-display font-bold text-sm text-[#0f1117] leading-tight">{s.value}</p>
+                <p className="font-bold text-sm text-[#0f1117] leading-tight">{s.value}</p>
                 <p className="text-xs text-[#0f1117]/60 leading-tight">{s.label}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

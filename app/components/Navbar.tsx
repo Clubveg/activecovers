@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -82,8 +83,15 @@ export default function Navbar() {
       </div>
 
       {/* Mobile menu */}
+      <AnimatePresence>
       {menuOpen && (
-        <div className="md:hidden bg-[#0f1117]/98 backdrop-blur-md px-6 py-6 flex flex-col gap-5 border-t border-white/10">
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className="md:hidden bg-[#0f1117]/98 backdrop-blur-md px-6 py-6 flex flex-col gap-5 border-t border-white/10 overflow-hidden"
+        >
           {["Products", "Gallery", "About", "Contact"].map((item) => (
             <a
               key={item}
@@ -114,8 +122,9 @@ export default function Navbar() {
           >
             Free Quote
           </a>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </header>
   );
 }
