@@ -51,9 +51,8 @@ export default function Contact() {
                   {phoneRevealed ? (
                     <p className="font-bold text-[#fcaf3b] transition-colors">{phone}</p>
                   ) : (
-                    <p className="font-bold text-[#0f1117] group-hover:text-[#fcaf3b] transition-colors flex items-center gap-2">
+                    <p className="font-bold text-[#0f1117] group-hover:text-[#fcaf3b] transition-colors">
                       1300 50 •• ••
-                      <span className="text-xs font-normal text-gray-400">(tap to reveal)</span>
                     </p>
                   )}
                 </div>
@@ -78,9 +77,8 @@ export default function Contact() {
                   {emailRevealed ? (
                     <p className="font-bold text-[#fcaf3b] transition-colors">{email}</p>
                   ) : (
-                    <p className="font-bold text-[#0f1117] group-hover:text-[#fcaf3b] transition-colors flex items-center gap-2">
+                    <p className="font-bold text-[#0f1117] group-hover:text-[#fcaf3b] transition-colors">
                       info@active•••••••
-                      <span className="text-xs font-normal text-gray-400">(tap to reveal)</span>
                     </p>
                   )}
                 </div>
