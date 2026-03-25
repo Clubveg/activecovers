@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${jakarta.variable} scroll-smooth`}>
       <body
-        className="bg-[#0f1117] text-gray-900 antialiased overflow-x-hidden"
+        className="bg-[#0f1117] text-gray-900 antialiased"
         style={{ fontFamily: "var(--font-jakarta), sans-serif" }}
       >
         {children}

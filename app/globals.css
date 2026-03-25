@@ -18,7 +18,7 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Landscape mobile — reduce hero spacing so content fits in short viewport */
