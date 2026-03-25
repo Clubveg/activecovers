@@ -1,115 +1,12 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import Image from "next/image";
+import { motion } from "framer-motion";
+import { ImageSwiper } from "./ImageSwiper";
 
-const images = [
-  { src: "/bifold-1.jpg", alt: "Hydraulic Bi-Fold Cover Installation 1" },
-  { src: "/bifold-2.jpg", alt: "Hydraulic Bi-Fold Cover Installation 2" },
-  { src: "/bifold-3.jpg", alt: "Hydraulic Bi-Fold Cover Installation 3" },
-  { src: "/bifold-4.jpg", alt: "Hydraulic Bi-Fold Cover Installation 4" },
-  { src: "/bifold-5.jpg", alt: "Hydraulic Bi-Fold Cover Installation 5" },
-  { src: "/bifold-6.jpg", alt: "Hydraulic Bi-Fold Cover Installation 6" },
-  { src: "/sliding-1.jpg", alt: "Sliding Cover Installation 1" },
-  { src: "/sliding-2.jpg", alt: "Sliding Cover Installation 2" },
-  { src: "/sliding-3.jpg", alt: "Sliding Cover Installation 3" },
-  { src: "/sliding-4.jpg", alt: "Sliding Cover Installation 4" },
-];
-
-function SwipeCard({
-  image,
-  index,
-  total,
-  onSwipe,
-}: {
-  image: { src: string; alt: string };
-  index: number;
-  total: number;
-  onSwipe: () => void;
-}) {
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 200], [-18, 18]);
-  const opacity = useTransform(x, [-150, 0, 150], [0.3, 1, 0.3]);
-  const isDragging = useRef(false);
-
-  const stackOffset = index * 6;
-  const stackScale = 1 - index * 0.05;
-  const stackY = index * 10;
-
-  if (index > 3) return null;
-
-  return (
-    <motion.div
-      className="absolute cursor-grab active:cursor-grabbing"
-      style={{
-        x: index === 0 ? x : 0,
-        rotate: index === 0 ? rotate : stackOffset * 1.5 - 4,
-        opacity: index === 0 ? opacity : 1 - index * 0.15,
-        scale: stackScale,
-        y: stackY,
-        zIndex: total - index,
-        top: 0,
-        left: 0,
-        right: 0,
-      }}
-      drag={index === 0 ? "x" : false}
-      dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.7}
-      onDragStart={() => { isDragging.current = true; }}
-      onDragEnd={(_, info) => {
-        isDragging.current = false;
-        if (Math.abs(info.offset.x) > 80 || Math.abs(info.velocity.x) > 400) {
-          const direction = info.offset.x > 0 ? 1 : -1;
-          animate(x, direction * 600, {
-            duration: 0.3,
-            ease: "easeOut",
-            onComplete: onSwipe,
-          });
-        } else {
-          animate(x, 0, { duration: 0.4, ease: "easeOut" });
-        }
-      }}
-    >
-      <div
-        className="relative rounded-2xl overflow-hidden shadow-2xl select-none"
-        style={{ width: "320px", height: "420px" }}
-      >
-        <Image
-          src={image.src}
-          alt={image.alt}
-          fill
-          className="object-cover pointer-events-none"
-          sizes="320px"
-          draggable={false}
-        />
-        {/* Gradient overlay at bottom */}
-        <div
-          className="absolute inset-x-0 bottom-0 h-24"
-          style={{
-            background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)",
-          }}
-        />
-        <p className="absolute bottom-4 left-4 text-white text-xs font-medium opacity-80">
-          {image.alt}
-        </p>
-      </div>
-    </motion.div>
-  );
-}
+const galleryImages =
+  "/bifold-1.jpg, /bifold-2.jpg, /bifold-3.jpg, /bifold-4.jpg, /bifold-5.jpg, /bifold-6.jpg, /sliding-1.jpg, /sliding-2.jpg, /sliding-3.jpg, /sliding-4.jpg";
 
 export default function Gallery() {
-  const [deck, setDeck] = useState(images);
-  const [swiped, setSwiped] = useState(0);
-
-  const handleSwipe = () => {
-    setDeck((prev) => {
-      const [first, ...rest] = prev;
-      return [...rest, first];
-    });
-    setSwiped((s) => s + 1);
-  };
-
   return (
     <section id="gallery" style={{ background: "#0f1117" }} className="py-24">
       <div className="max-w-7xl mx-auto px-6">
@@ -135,7 +32,7 @@ export default function Gallery() {
           </p>
         </motion.div>
 
-        {/* Card Stack */}
+        {/* Card Stack + Side Text */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -143,26 +40,13 @@ export default function Gallery() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex flex-col lg:flex-row items-center justify-center gap-16"
         >
-          {/* Stack */}
-          <div className="flex flex-col items-center gap-8">
-            <div
-              className="relative"
-              style={{ width: "320px", height: "420px" }}
-            >
-              {[...deck].reverse().map((img, reversedIndex) => {
-                const index = deck.length - 1 - reversedIndex;
-                return (
-                  <SwipeCard
-                    key={`${img.src}-${swiped}`}
-                    image={img}
-                    index={index}
-                    total={deck.length}
-                    onSwipe={handleSwipe}
-                  />
-                );
-              })}
-            </div>
-
+          {/* ImageSwiper */}
+          <div className="flex flex-col items-center gap-6">
+            <ImageSwiper
+              images={galleryImages}
+              cardWidth={500}
+              cardHeight={300}
+            />
             {/* Swipe hint */}
             <div className="flex items-center gap-3 text-white/40 text-sm">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -172,20 +56,6 @@ export default function Gallery() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M18 8l4 4-4 4M6 8l-4 4 4 4" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            </div>
-
-            {/* Counter */}
-            <div className="flex gap-1.5">
-              {images.map((_, i) => (
-                <div
-                  key={i}
-                  className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                  style={{
-                    background: i === (swiped % images.length) ? "#fcaf3b" : "rgba(255,255,255,0.2)",
-                    transform: i === (swiped % images.length) ? "scale(1.4)" : "scale(1)",
-                  }}
-                />
-              ))}
             </div>
           </div>
 
