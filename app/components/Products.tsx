@@ -1,28 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-
-const slidingImages = [
-  "/sliding-1.jpg",
-  "/sliding-2.jpg",
-  "/sliding-3.jpg",
-  "/sliding-4.jpg",
-];
-
-const bifoldImages = [
-  "/bifold-1.jpg",
-  "/bifold-2.jpg",
-  "/bifold-3.jpg",
-  "/bifold-4.jpg",
-  "/bifold-5.jpg",
-  "/bifold-6.jpg",
-];
 
 const bifold = {
   name: "Hydraulic Bi-Fold Cover",
   tag: "Most Popular",
+  image: "/bifold-2.jpg",
   description:
     "Our signature product. The bi-fold design opens effortlessly with a hydraulic assist, folding neatly back to give you full, unobstructed access to your swim spa — while blending seamlessly into your deck.",
   features: [
@@ -38,6 +22,7 @@ const bifold = {
 const sliding = {
   name: "Sliding Cover",
   tag: "Space Saving",
+  image: "/sliding-1.jpg",
   description:
     "Engineered for backyards where space is at a premium. The sliding mechanism glides smoothly to one side, requiring minimal clearance while still delivering full spa access.",
   features: [
@@ -50,15 +35,12 @@ const sliding = {
   ],
 };
 
+const products = [
+  { ...bifold, accentColor: "#fcaf3b", tagBg: "#fcaf3b20", tagText: "#fcaf3b", btnClass: "bg-[#fcaf3b] text-[#0f1117]", topBar: "bg-[#fcaf3b]" },
+  { ...sliding, accentColor: "#64748b", tagBg: "#64748b20", tagText: "#64748b", btnClass: "bg-[#64748b] text-white", topBar: "bg-[#64748b]" },
+];
+
 export default function Products() {
-  const [activeImg, setActiveImg] = useState(0);
-  const [activeSlidingImg, setActiveSlidingImg] = useState(0);
-
-  const prev = () => setActiveImg((i) => (i - 1 + bifoldImages.length) % bifoldImages.length);
-  const next = () => setActiveImg((i) => (i + 1) % bifoldImages.length);
-  const prevSliding = () => setActiveSlidingImg((i) => (i - 1 + slidingImages.length) % slidingImages.length);
-  const nextSliding = () => setActiveSlidingImg((i) => (i + 1) % slidingImages.length);
-
   return (
     <section id="products" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -87,176 +69,66 @@ export default function Products() {
 
         {/* Cards */}
         <div className="grid md:grid-cols-2 gap-8">
+          {products.map((p, i) => (
+            <motion.div
+              key={p.name}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: i * 0.1 + 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
+              className="group relative rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all hover:shadow-2xl hover:-translate-y-1 bg-[#f8f9fa]"
+            >
+              <div className={`h-1.5 w-full ${p.topBar}`} />
 
-          {/* ── Bi-Fold Card ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="group relative rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all hover:shadow-2xl hover:-translate-y-1 bg-[#f8f9fa]"
-          >
-            <div className="h-1.5 w-full bg-[#fcaf3b]" />
-
-            {/* Image Gallery */}
-            <div className="relative w-full aspect-video bg-gray-200 overflow-hidden">
-              <Image
-                src={bifoldImages[activeImg]}
-                alt={`Hydraulic Bi-Fold Cover ${activeImg + 1}`}
-                fill
-                className="object-cover transition-opacity duration-300"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-
-              {/* Arrows */}
-              <button
-                onClick={prev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all"
-                aria-label="Previous image"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              <button
-                onClick={next}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all"
-                aria-label="Next image"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-
-              {/* Counter */}
-              <div className="absolute bottom-3 right-3 bg-black/50 text-white text-xs px-2.5 py-1 rounded-full">
-                {activeImg + 1} / {bifoldImages.length}
+              {/* Static image */}
+              <div className="relative w-full aspect-video overflow-hidden">
+                <Image
+                  src={p.image}
+                  alt={p.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
               </div>
 
-              {/* Dot indicators */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                {bifoldImages.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveImg(i)}
-                    className={`w-1.5 h-1.5 rounded-full transition-all ${i === activeImg ? "bg-white scale-125" : "bg-white/50"}`}
-                  />
-                ))}
+              <div className="p-8 md:p-10 flex flex-col gap-6">
+                <div>
+                  <span
+                    className="inline-block text-xs font-bold tracking-wider uppercase px-3 py-1 rounded-full mb-3"
+                    style={{ background: p.tagBg, color: p.tagText }}
+                  >
+                    {p.tag}
+                  </span>
+                  <h3 className="font-bold text-2xl text-[#0f1117]">{p.name}</h3>
+                </div>
+                <p className="text-gray-500 leading-relaxed">{p.description}</p>
+                <ul className="flex flex-col gap-2.5">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-center gap-3 text-sm text-gray-600">
+                      <div
+                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        style={{ background: p.accentColor }}
+                      />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <div className="pt-2">
+                  <a
+                    href="#contact"
+                    className={`inline-flex items-center gap-2 font-bold text-sm px-6 py-3 rounded-full transition-all hover:scale-105 ${p.btnClass}`}
+                  >
+                    Request a Quote
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </a>
+                </div>
               </div>
-            </div>
-
-            <div className="p-8 md:p-10 flex flex-col gap-6">
-              <div>
-                <span className="inline-block text-xs font-bold tracking-wider uppercase px-3 py-1 rounded-full mb-3 bg-[#fcaf3b20] text-[#fcaf3b]">
-                  {bifold.tag}
-                </span>
-                <h3 className="font-bold text-2xl text-[#0f1117]">{bifold.name}</h3>
-              </div>
-              <p className="text-gray-500 leading-relaxed">{bifold.description}</p>
-              <ul className="flex flex-col gap-2.5">
-                {bifold.features.map((f) => (
-                  <li key={f} className="flex items-center gap-3 text-sm text-gray-600">
-                    <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-[#fcaf3b]" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <div className="flex gap-3 pt-2">
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 font-bold text-sm px-6 py-3 rounded-full transition-all hover:scale-105 bg-[#fcaf3b] text-[#0f1117]"
-                >
-                  Request a Quote
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ── Sliding Cover Card ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="group relative rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all hover:shadow-2xl hover:-translate-y-1 bg-[#f8f9fa]"
-          >
-            <div className="h-1.5 w-full bg-[#64748b]" />
-
-            {/* Sliding Image Gallery */}
-            <div className="relative w-full aspect-video bg-gray-200 overflow-hidden">
-              <Image
-                src={slidingImages[activeSlidingImg]}
-                alt={`Sliding Cover ${activeSlidingImg + 1}`}
-                fill
-                className="object-cover transition-opacity duration-300"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <button
-                onClick={prevSliding}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all"
-                aria-label="Previous image"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              <button
-                onClick={nextSliding}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all"
-                aria-label="Next image"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              <div className="absolute bottom-3 right-3 bg-black/50 text-white text-xs px-2.5 py-1 rounded-full">
-                {activeSlidingImg + 1} / {slidingImages.length}
-              </div>
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                {slidingImages.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveSlidingImg(i)}
-                    className={`w-1.5 h-1.5 rounded-full transition-all ${i === activeSlidingImg ? "bg-white scale-125" : "bg-white/50"}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="p-8 md:p-10 flex flex-col gap-6">
-              <div>
-                <span className="inline-block text-xs font-bold tracking-wider uppercase px-3 py-1 rounded-full mb-3 bg-[#64748b20] text-[#64748b]">
-                  {sliding.tag}
-                </span>
-                <h3 className="font-bold text-2xl text-[#0f1117]">{sliding.name}</h3>
-              </div>
-              <p className="text-gray-500 leading-relaxed">{sliding.description}</p>
-              <ul className="flex flex-col gap-2.5">
-                {sliding.features.map((f) => (
-                  <li key={f} className="flex items-center gap-3 text-sm text-gray-600">
-                    <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-[#64748b]" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <div className="flex gap-3 pt-2">
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 font-bold text-sm px-6 py-3 rounded-full transition-all hover:scale-105 bg-[#64748b] text-white"
-                >
-                  Request a Quote
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </motion.div>
-
+            </motion.div>
+          ))}
         </div>
+
       </div>
     </section>
   );
