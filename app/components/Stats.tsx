@@ -53,13 +53,22 @@ const stats = [
     value: "Personal Manager",
     label: "Dedicated to your project",
   },
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+      </svg>
+    ),
+    value: "Free Quote",
+    label: "No obligation estimate",
+  },
 ];
 
 export default function Stats() {
   return (
     <section style={{ background: "#fcaf3b" }}>
       <div className="max-w-7xl mx-auto px-6 py-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {stats.map((s, i) => (
             <motion.div
               key={s.value}
