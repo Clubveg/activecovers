@@ -1,5 +1,12 @@
+"use client";
+import { useState } from "react";
+
+const emailParts = ["info", "activecovers", "com.au"];
+
 export default function Footer() {
   const year = new Date().getFullYear();
+  const [emailRevealed, setEmailRevealed] = useState(false);
+  const email = `${emailParts[0]}@${emailParts[1]}.${emailParts[2]}`;
 
   return (
     <footer style={{ background: "#0a0d14" }}>
@@ -32,14 +39,20 @@ export default function Footer() {
               Navigation
             </p>
             <ul className="flex flex-col gap-3">
-              {["Products", "Gallery", "About", "Contact"].map((item) => (
-                <li key={item}>
+              {[
+                { label: "Products", href: "#products" },
+                { label: "Gallery", href: "#gallery" },
+                { label: "About", href: "#about" },
+                { label: "Finance", href: "/finance" },
+                { label: "Contact", href: "#contact" },
+              ].map((item) => (
+                <li key={item.label}>
                   <a
-                    href={`#${item.toLowerCase()}`}
+                    href={item.href}
                     className="text-sm transition-colors hover:text-white"
                     style={{ color: "rgba(255,255,255,0.5)" }}
                   >
-                    {item}
+                    {item.label}
                   </a>
                 </li>
               ))}
@@ -53,13 +66,16 @@ export default function Footer() {
             </p>
             <ul className="flex flex-col gap-3">
               <li>
-                <a
-                  href="mailto:info@activecovers.com.au"
-                  className="text-sm transition-colors hover:text-white"
+                <button
+                  onClick={() => {
+                    if (emailRevealed) window.location.href = `mailto:${email}`;
+                    else setEmailRevealed(true);
+                  }}
+                  className="text-sm transition-colors hover:text-white cursor-pointer text-left"
                   style={{ color: "rgba(255,255,255,0.5)" }}
                 >
-                  info@activecovers.com.au
-                </a>
+                  {emailRevealed ? email : "info@active•••••••"}
+                </button>
               </li>
               <li>
                 <span className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
