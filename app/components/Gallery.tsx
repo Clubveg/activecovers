@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ImageSwiper } from "./ImageSwiper";
 
 const galleryImages =
-  "/bifold-1.jpg, /bifold-2.jpg, /bifold-3.jpg, /bifold-4.jpg, /bifold-5.jpg, /bifold-6.jpg, /sliding-1.jpg, /sliding-2.jpg, /sliding-3.jpg, /sliding-4.jpg";
+  "/bifold-1.jpg, /bifold-2.jpg, /bifold-3.jpg, /bifold-4.jpg, /bifold-5.jpg, /bifold-6.jpg, /sliding-1.jpg";
 
 export default function Gallery() {
   return (
