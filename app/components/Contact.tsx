@@ -11,7 +11,6 @@ const FORMSPREE_ID = "xvzvobrw";
 type Status = "idle" | "submitting" | "success" | "error";
 
 export default function Contact() {
-  const [phoneRevealed, setPhoneRevealed] = useState(false);
   const [emailRevealed, setEmailRevealed] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
 
@@ -61,12 +60,9 @@ export default function Contact() {
             {/* Contact details */}
             <div className="flex flex-col gap-5">
               {/* Phone — click to reveal */}
-              <div
-                className="flex items-center gap-4 group cursor-pointer"
-                onClick={() => {
-                  if (phoneRevealed) window.location.href = `tel:${phone.replace(/\s/g, "")}`;
-                  else setPhoneRevealed(true);
-                }}
+              <a
+                href={`tel:${phone.replace(/\s/g, "")}`}
+                className="flex items-center gap-4 group"
               >
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[#fcaf3b]/10 group-hover:bg-[#fcaf3b]/20 transition-colors">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fcaf3b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -75,15 +71,9 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide">Phone</p>
-                  {phoneRevealed ? (
-                    <p className="font-bold text-[#fcaf3b] transition-colors">{phone}</p>
-                  ) : (
-                    <p className="font-bold text-[#0f1117] group-hover:text-[#fcaf3b] transition-colors">
-                      1300 50 •• ••
-                    </p>
-                  )}
+                  <p className="font-bold text-[#0f1117] group-hover:text-[#fcaf3b] transition-colors">{phone}</p>
                 </div>
-              </div>
+              </a>
 
               {/* Email — click to reveal */}
               <div
