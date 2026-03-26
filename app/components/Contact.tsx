@@ -5,12 +5,39 @@ import { useState } from "react";
 const phoneParts = ["1300", "50", "26", "50"];
 const emailParts = ["info", "activecovers", "com.au"];
 
+// ← Paste your Formspree form ID here after signing up at formspree.io
+const FORMSPREE_ID = "YOUR_FORM_ID";
+
+type Status = "idle" | "submitting" | "success" | "error";
+
 export default function Contact() {
   const [phoneRevealed, setPhoneRevealed] = useState(false);
   const [emailRevealed, setEmailRevealed] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
 
   const phone = phoneParts.join(" ");
   const email = `${emailParts[0]}@${emailParts[1]}.${emailParts[2]}`;
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setStatus("submitting");
+    const data = new FormData(e.currentTarget);
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: "POST",
+        body: data,
+        headers: { Accept: "application/json" },
+      });
+      if (res.ok) {
+        setStatus("success");
+        (e.target as HTMLFormElement).reset();
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  }
 
   return (
     <section id="contact" className="py-24 bg-white">
@@ -101,91 +128,125 @@ export default function Contact() {
 
           {/* Right — Form */}
           <div className="rounded-3xl p-8 md:p-10" style={{ background: "#f8f9fa" }}>
-            <form className="flex flex-col gap-5">
-              <div className="grid sm:grid-cols-2 gap-5">
+
+            {status === "success" ? (
+              <div className="flex flex-col items-center justify-center text-center py-12 gap-4">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "rgba(252,175,59,0.15)" }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fcaf3b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-xl text-[#0f1117]">Quote request sent!</h3>
+                <p className="text-gray-500 text-sm max-w-xs">Thanks — we&apos;ll be in touch within one business day with a tailored quote.</p>
+                <button
+                  onClick={() => setStatus("idle")}
+                  className="text-sm font-bold text-[#fcaf3b] underline underline-offset-2 mt-2"
+                >
+                  Send another
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      placeholder="John Smith"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+                      Phone *
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      placeholder="0400 000 000"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
-                    Full Name *
+                    Email *
                   </label>
                   <input
-                    type="text"
+                    type="email"
+                    name="email"
                     required
-                    placeholder="John Smith"
+                    placeholder="john@example.com"
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
                   />
                 </div>
+
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+                      Spa Brand / Model
+                    </label>
+                    <input
+                      type="text"
+                      name="spa_model"
+                      placeholder="e.g. SwimSpa Pro 6000"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+                      State
+                    </label>
+                    <select
+                      name="state"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
+                    >
+                      <option value="">Select state…</option>
+                      {["NSW", "VIC", "QLD", "WA", "SA", "TAS", "ACT", "NT"].map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
-                    Phone *
+                    Message
                   </label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="0400 000 000"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
+                  <textarea
+                    name="message"
+                    rows={4}
+                    placeholder="Tell us about your swim spa and any specific requirements…"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm resize-none"
                   />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  required
-                  placeholder="john@example.com"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
-                />
-              </div>
+                {status === "error" && (
+                  <p className="text-sm text-red-500 text-center">
+                    Something went wrong — please try again or call us directly.
+                  </p>
+                )}
 
-              <div className="grid sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
-                    Spa Brand / Model
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. SwimSpa Pro 6000"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
-                    State
-                  </label>
-                  <select className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm">
-                    <option value="">Select state…</option>
-                    {["NSW", "VIC", "QLD", "WA", "SA", "TAS", "ACT", "NT"].map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+                <button
+                  type="submit"
+                  disabled={status === "submitting"}
+                  className="w-full font-bold py-4 rounded-full transition-all hover:scale-[1.02] active:scale-95 text-[#0f1117] disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100"
+                  style={{ background: "#fcaf3b" }}
+                >
+                  {status === "submitting" ? "Sending…" : "Send Quote Request"}
+                </button>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
-                  Message
-                </label>
-                <textarea
-                  rows={4}
-                  placeholder="Tell us about your swim spa and any specific requirements…"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm resize-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full font-bold py-4 rounded-full transition-all hover:scale-[1.02] active:scale-95 text-[#0f1117]"
-                style={{ background: "#fcaf3b" }}
-              >
-                Send Quote Request
-              </button>
-
-              <p className="text-xs text-center text-gray-400">
-                We respond within 1 business day. No obligation.
-              </p>
-            </form>
+                <p className="text-xs text-center text-gray-400">
+                  We respond within 1 business day. No obligation.
+                </p>
+              </form>
+            )}
           </div>
         </div>
       </div>
