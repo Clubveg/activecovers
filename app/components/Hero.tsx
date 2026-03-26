@@ -96,7 +96,8 @@ export default function Hero() {
 
               <p className="text-sm md:text-lg leading-relaxed text-white/70 max-w-lg">
                 Hydraulic bi-fold covers custom made for your swim spa.<br />
-                5 year warranty, 6 week turnaround, personally managed from start to finish.
+                5 year warranty, 6 week turnaround,<br />
+                personally managed from start to finish.
               </p>
 
               <div className="flex flex-wrap items-center gap-4">
