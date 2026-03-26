@@ -17,6 +17,24 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
 }) => {
   const cardStackRef = useRef<HTMLDivElement>(null);
   const isSwiping = useRef(false);
+
+  // Responsive card dimensions — shrink on mobile with visible margins
+  const [dims, setDims] = useState({ w: cardWidth, h: cardHeight });
+  useEffect(() => {
+    function update() {
+      const vw = window.innerWidth;
+      if (vw < 640) {
+        const w = vw - 56; // 28px margin each side
+        const h = Math.round(w * (cardHeight / cardWidth));
+        setDims({ w, h });
+      } else {
+        setDims({ w: cardWidth, h: cardHeight });
+      }
+    }
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [cardWidth, cardHeight]);
   const startX = useRef(0);
   const currentX = useRef(0);
   const animationFrameId = useRef<number | null>(null);
@@ -157,8 +175,8 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
       className={`relative grid place-content-center select-none ${className}`}
       ref={cardStackRef as React.RefObject<HTMLDivElement>}
       style={{
-        width: cardWidth + 32,
-        height: cardHeight + 32,
+        width: dims.w + 32,
+        height: dims.h + 32,
         touchAction: 'none',
         transformStyle: 'preserve-3d',
         '--card-perspective': '700px',
@@ -177,8 +195,8 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
           style={{
             '--i': (displayIndex + 1).toString(),
             zIndex: imageList.length - displayIndex,
-            width: cardWidth,
-            height: cardHeight,
+            width: dims.w,
+            height: dims.h,
             transform: `perspective(var(--card-perspective))
                        translateZ(calc(-1 * var(--card-z-offset) * var(--i)))
                        translateY(calc(var(--card-y-offset) * var(--i)))
