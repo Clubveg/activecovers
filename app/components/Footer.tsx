@@ -103,6 +103,9 @@ export default function Footer() {
             <a href="/privacy-policy" className="text-xs transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.3)" }}>
               Privacy Policy
             </a>
+            <a href="/terms-conditions" className="text-xs transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.3)" }}>
+              Terms &amp; Conditions
+            </a>
             <a href="#" className="text-xs transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.3)" }}>
               Warranty
             </a>
