@@ -78,7 +78,7 @@ export default function Footer() {
               </li>
               <li>
                 <span className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
-                  20 Bond Street, Sydney NSW 2000
+                  Level 4, 20 Bond Street, Sydney NSW 2000
                 </span>
               </li>
               <li>
