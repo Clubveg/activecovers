@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
-
-const emailParts = ["info", "activecovers", "com.au"];
+import { emailParts } from "../lib/contact";
 
 export default function Footer() {
   const year = new Date().getFullYear();

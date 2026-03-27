@@ -1,9 +1,6 @@
 "use client";
 import { useState } from "react";
-
-// Split to prevent scraping — never stored as a plain string
-const phoneParts = ["1300", "50", "26", "50"];
-const emailParts = ["info", "activecovers", "com.au"];
+import { phoneParts, emailParts } from "../lib/contact";
 
 // ← Paste your Formspree form ID here after signing up at formspree.io
 const FORMSPREE_ID = "xvzvobrw";

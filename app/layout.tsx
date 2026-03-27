@@ -13,6 +13,20 @@ export const metadata: Metadata = {
   title: "Active Covers Australia | Premium Hydraulic Swim Spa Covers",
   description:
     "Australia's leading manufacturer of hydraulic swim spa covers. Custom-made, 5-year warranty, 6-week turnaround. Family owned since 1992.",
+  openGraph: {
+    title: "Active Covers Australia | Premium Hydraulic Swim Spa Covers",
+    description:
+      "Australia's leading manufacturer of hydraulic swim spa covers. Custom-made, 5-year warranty, 6-week turnaround. Family owned since 1992.",
+    url: "https://activecovers.com.au",
+    siteName: "Active Covers Australia",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Active Covers Australia | Premium Hydraulic Swim Spa Covers",
+    description:
+      "Australia's leading manufacturer of hydraulic swim spa covers. Custom-made, 5-year warranty, 6-week turnaround. Family owned since 1992.",
+  },
 };
 
 export default function RootLayout({

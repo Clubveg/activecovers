@@ -18,17 +18,17 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
   const cardStackRef = useRef<HTMLDivElement>(null);
   const isSwiping = useRef(false);
 
-  // Responsive card dimensions — shrink on mobile with visible margins
-  const [dims, setDims] = useState({ w: cardWidth, h: cardHeight });
+  const [effectiveWidth, setEffectiveWidth] = useState(cardWidth);
+  const [effectiveHeight, setEffectiveHeight] = useState(cardHeight);
   useEffect(() => {
     function update() {
-      const vw = window.innerWidth;
-      if (vw < 640) {
-        const w = vw - 56; // 28px margin each side
-        const h = Math.round(w * (cardHeight / cardWidth));
-        setDims({ w, h });
+      const maxW = window.innerWidth - 48;
+      if (cardWidth > maxW) {
+        setEffectiveWidth(maxW);
+        setEffectiveHeight(Math.round(cardHeight * (maxW / cardWidth)));
       } else {
-        setDims({ w: cardWidth, h: cardHeight });
+        setEffectiveWidth(cardWidth);
+        setEffectiveHeight(cardHeight);
       }
     }
     update();
@@ -175,8 +175,8 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
       className={`relative grid place-content-center select-none ${className}`}
       ref={cardStackRef as React.RefObject<HTMLDivElement>}
       style={{
-        width: dims.w + 32,
-        height: dims.h + 32,
+        width: effectiveWidth + 32,
+        height: effectiveHeight + 32,
         touchAction: 'none',
         transformStyle: 'preserve-3d',
         '--card-perspective': '700px',
@@ -195,8 +195,8 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
           style={{
             '--i': (displayIndex + 1).toString(),
             zIndex: imageList.length - displayIndex,
-            width: dims.w,
-            height: dims.h,
+            width: effectiveWidth,
+            height: effectiveHeight,
             transform: `perspective(var(--card-perspective))
                        translateZ(calc(-1 * var(--card-z-offset) * var(--i)))
                        translateY(calc(var(--card-y-offset) * var(--i)))

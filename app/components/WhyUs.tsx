@@ -54,7 +54,7 @@ const reasons = [
     icon: "hydraulic",
   },
   {
-    title: "5-Year Warranty",
+    title: "5 Year Warranty",
     description:
       "We back every cover with a comprehensive 5-year warranty. 100% coverage for the first 2 years, 50% years 3–5.",
     icon: "warranty",
@@ -72,7 +72,7 @@ const reasons = [
     icon: "manager",
   },
   {
-    title: "Fast 6-Week Turnaround",
+    title: "Fast 6 Week Turnaround",
     description:
       "We know you can't wait to enjoy your spa. Our efficient Sydney manufacturing gets your cover to you in just 6 weeks.",
     icon: "turnaround",
