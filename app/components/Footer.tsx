@@ -100,7 +100,7 @@ export default function Footer() {
             © {year} Active Covers Australia. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
-            <a href="#" className="text-xs transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.3)" }}>
+            <a href="/privacy-policy" className="text-xs transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.3)" }}>
               Privacy Policy
             </a>
             <a href="#" className="text-xs transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.3)" }}>
