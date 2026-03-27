@@ -1,6 +1,12 @@
+"use client";
+import { useState } from "react";
+
+const emailParts = ["info", "activecovers", "com.au"];
+
 export default function Footer() {
   const year = new Date().getFullYear();
-  const email = "info@activecovers.com.au";
+  const [emailRevealed, setEmailRevealed] = useState(false);
+  const email = `${emailParts[0]}@${emailParts[1]}.${emailParts[2]}`;
 
   return (
     <footer style={{ background: "#0a0d14" }}>
@@ -60,13 +66,16 @@ export default function Footer() {
             </p>
             <ul className="flex flex-col gap-3">
               <li>
-                <a
-                  href={`mailto:${email}`}
-                  className="text-sm transition-colors hover:text-white"
+                <span
+                  className="text-sm transition-colors hover:text-white cursor-pointer"
                   style={{ color: "rgba(255,255,255,0.5)" }}
+                  onClick={() => {
+                    if (emailRevealed) window.location.href = `mailto:${email}`;
+                    else setEmailRevealed(true);
+                  }}
                 >
-                  {email}
-                </a>
+                  {emailRevealed ? email : "info@active•••••••"}
+                </span>
               </li>
               <li>
                 <span className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
