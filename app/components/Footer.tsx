@@ -106,7 +106,7 @@ export default function Footer() {
             <a href="/terms-conditions" className="text-xs transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.3)" }}>
               Terms &amp; Conditions
             </a>
-            <a href="#" className="text-xs transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.3)" }}>
+            <a href="/warranty" className="text-xs transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.3)" }}>
               Warranty
             </a>
             <a href="/operating-procedure" className="text-xs transition-colors hover:text-white" style={{ color: "rgba(255,255,255,0.3)" }}>
