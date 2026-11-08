@@ -11,13 +11,29 @@ export default function Hero() {
     const video = videoRef.current;
     if (!section || !video) return;
 
+    let target = 0;
+    let frame = 0;
+
     // Play then immediately pause — forces browser to buffer & enables seeking
     video.play()
       .then(() => {
         video.pause();
-        video.currentTime = 0;
+        video.currentTime = target;
       })
       .catch(() => {});
+
+    // Seek at most once per animation frame, and never while the previous
+    // seek is still decoding, so fast scrolling doesn't pile up seeks.
+    const tick = () => {
+      frame = 0;
+      if (video.seeking) {
+        frame = requestAnimationFrame(tick);
+        return;
+      }
+      if (Math.abs(video.currentTime - target) > 1 / 30) {
+        video.currentTime = target;
+      }
+    };
 
     const handleScroll = () => {
       const duration = video.duration;
@@ -27,11 +43,17 @@ export default function Hero() {
       const scrollRange = section.offsetHeight - window.innerHeight;
       const progress = Math.max(0, Math.min(1, scrolledPast / scrollRange));
 
-      video.currentTime = progress * duration;
+      target = progress * duration;
+      if (!frame) frame = requestAnimationFrame(tick);
     };
 
+    video.addEventListener("loadedmetadata", handleScroll);
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      video.removeEventListener("loadedmetadata", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   return (
@@ -44,6 +66,7 @@ export default function Hero() {
         <video
           ref={videoRef}
           src="/cover-video.mp4"
+          poster="/cover-poster.webp"
           className="absolute inset-0 w-full h-full"
           style={{ objectFit: "cover" }}
           muted

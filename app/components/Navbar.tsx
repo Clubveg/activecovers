@@ -36,13 +36,13 @@ export default function Navbar() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
           {["Products", "Gallery", "About", "Contact"].map((item) => (
-            <a
+            <Link
               key={item}
-              href={`#${item.toLowerCase()}`}
+              href={`/#${item.toLowerCase()}`}
               className="text-sm font-medium text-white/80 hover:text-white transition-colors"
             >
               {item}
-            </a>
+            </Link>
           ))}
           <a
             href="/finance"
@@ -60,12 +60,12 @@ export default function Navbar() {
           >
             1300 50 26 50
           </a>
-          <a
-            href="#contact"
+          <Link
+            href="/#contact"
             className="bg-[#fcaf3b] hover:bg-[#e8961f] text-[#0f1117] text-sm font-bold px-5 py-2.5 rounded-full transition-colors"
           >
             Free Quote
-          </a>
+          </Link>
         </div>
 
         {/* Mobile menu button */}
@@ -93,14 +93,14 @@ export default function Navbar() {
           className="md:hidden bg-[#0f1117]/98 backdrop-blur-md px-6 py-6 flex flex-col gap-5 border-t border-white/10 overflow-hidden"
         >
           {["Products", "Gallery", "About", "Contact"].map((item) => (
-            <a
+            <Link
               key={item}
-              href={`#${item.toLowerCase()}`}
+              href={`/#${item.toLowerCase()}`}
               className="text-white/80 hover:text-white font-medium text-lg"
               onClick={() => setMenuOpen(false)}
             >
               {item}
-            </a>
+            </Link>
           ))}
           <a
             href="/finance"
@@ -115,13 +115,13 @@ export default function Navbar() {
           >
             1300 50 26 50
           </a>
-          <a
-            href="#contact"
+          <Link
+            href="/#contact"
             className="bg-[#fcaf3b] text-[#0f1117] font-bold px-5 py-3 rounded-full text-center"
             onClick={() => setMenuOpen(false)}
           >
             Free Quote
-          </a>
+          </Link>
         </motion.div>
       )}
       </AnimatePresence>

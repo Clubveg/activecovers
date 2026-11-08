@@ -7,6 +7,12 @@ const FORMSPREE_ID = "xvzvobrw";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
+// 16px text stops iPhones zooming in on focus; the dark amber ring is a
+// focus indicator that stays visible on white (about 4.2:1).
+const labelClass = "block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2";
+const fieldClass =
+  "w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#b26b00] focus:ring-2 focus:ring-[#b26b00] transition-colors text-base";
+
 export default function Contact() {
   const [emailRevealed, setEmailRevealed] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
@@ -117,7 +123,7 @@ export default function Contact() {
           <div className="rounded-3xl p-8 md:p-10" style={{ background: "#f8f9fa" }}>
 
             {status === "success" ? (
-              <div className="flex flex-col items-center justify-center text-center py-12 gap-4">
+              <div role="status" className="flex flex-col items-center justify-center text-center py-12 gap-4">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "rgba(252,175,59,0.15)" }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fcaf3b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12" />
@@ -136,63 +142,73 @@ export default function Contact() {
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+                    <label htmlFor="quote-name" className={labelClass}>
                       Full Name *
                     </label>
                     <input
+                      id="quote-name"
                       type="text"
                       name="name"
+                      autoComplete="name"
                       required
                       placeholder="John Smith"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
+                      className={fieldClass}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+                    <label htmlFor="quote-phone" className={labelClass}>
                       Phone *
                     </label>
                     <input
+                      id="quote-phone"
                       type="tel"
                       name="phone"
+                      autoComplete="tel"
                       required
                       placeholder="0400 000 000"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
+                      className={fieldClass}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+                  <label htmlFor="quote-email" className={labelClass}>
                     Email *
                   </label>
                   <input
+                    id="quote-email"
                     type="email"
                     name="email"
+                    autoComplete="email"
                     required
                     placeholder="john@example.com"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
+                    className={fieldClass}
                   />
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
-                      Spa Brand / Model
+                    <label htmlFor="quote-suburb" className={labelClass}>
+                      Suburb
                     </label>
                     <input
+                      id="quote-suburb"
                       type="text"
-                      name="spa_model"
-                      placeholder="e.g. SwimSpa Pro 6000"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
+                      name="suburb"
+                      autoComplete="address-level2"
+                      placeholder="e.g. Castle Hill"
+                      className={fieldClass}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+                    <label htmlFor="quote-state" className={labelClass}>
                       State
                     </label>
                     <select
+                      id="quote-state"
                       name="state"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm"
+                      autoComplete="address-level1"
+                      className={fieldClass}
                     >
                       <option value="">Select state…</option>
                       {["NSW", "VIC", "QLD", "WA", "SA", "TAS", "ACT", "NT"].map((s) => (
@@ -202,20 +218,48 @@ export default function Contact() {
                   </div>
                 </div>
 
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label htmlFor="quote-spa-model" className={labelClass}>
+                      Spa Brand / Model
+                    </label>
+                    <input
+                      id="quote-spa-model"
+                      type="text"
+                      name="spa_model"
+                      placeholder="e.g. SwimSpa Pro 6000"
+                      className={fieldClass}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="quote-spa-size" className={labelClass}>
+                      Spa Size (L × W)
+                    </label>
+                    <input
+                      id="quote-spa-size"
+                      type="text"
+                      name="spa_size"
+                      placeholder="e.g. 6.0 m × 2.3 m"
+                      className={fieldClass}
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wide text-gray-500 mb-2">
+                  <label htmlFor="quote-message" className={labelClass}>
                     Message
                   </label>
                   <textarea
+                    id="quote-message"
                     name="message"
                     rows={4}
                     placeholder="Tell us about your swim spa and any specific requirements…"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[#fcaf3b] transition-colors text-sm resize-none"
+                    className={`${fieldClass} resize-none`}
                   />
                 </div>
 
                 {status === "error" && (
-                  <p className="text-sm text-red-500 text-center">
+                  <p role="alert" className="text-sm text-red-700 text-center">
                     Something went wrong — please try again or call us directly.
                   </p>
                 )}
@@ -223,13 +267,13 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="w-full font-bold py-4 rounded-full transition-all hover:scale-[1.02] active:scale-95 text-[#0f1117] disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100"
+                  className="w-full font-bold py-4 rounded-full transition-all hover:scale-[1.02] active:scale-95 text-[#0f1117] disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#b26b00]"
                   style={{ background: "#fcaf3b" }}
                 >
                   {status === "submitting" ? "Sending…" : "Send Quote Request"}
                 </button>
 
-                <p className="text-xs text-center text-gray-400">
+                <p className="text-xs text-center text-gray-600">
                   We respond within 1 business day. No obligation.
                 </p>
               </form>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import Image from 'next/image';
 
 interface ImageSwiperProps {
   images: string;
@@ -18,23 +19,11 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
   const cardStackRef = useRef<HTMLDivElement>(null);
   const isSwiping = useRef(false);
 
-  const [effectiveWidth, setEffectiveWidth] = useState(cardWidth);
-  const [effectiveHeight, setEffectiveHeight] = useState(cardHeight);
-  useEffect(() => {
-    function update() {
-      const maxW = window.innerWidth - 48;
-      if (cardWidth > maxW) {
-        setEffectiveWidth(maxW);
-        setEffectiveHeight(Math.round(cardHeight * (maxW / cardWidth)));
-      } else {
-        setEffectiveWidth(cardWidth);
-        setEffectiveHeight(cardHeight);
-      }
-    }
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, [cardWidth, cardHeight]);
+  // Size the stack in CSS rather than after mount, so the server-rendered
+  // height is already right on phones and the page doesn't shift (which
+  // threw off jumps to #contact from other pages by ~100 px).
+  const cardW = `min(${cardWidth}px, calc(100vw - 48px))`;
+  const cardH = `calc(${cardW} * ${cardHeight / cardWidth})`;
   const startX = useRef(0);
   const currentX = useRef(0);
   const animationFrameId = useRef<number | null>(null);
@@ -175,8 +164,8 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
       className={`relative grid place-content-center select-none ${className}`}
       ref={cardStackRef as React.RefObject<HTMLDivElement>}
       style={{
-        width: effectiveWidth + 32,
-        height: effectiveHeight + 32,
+        width: `calc(${cardW} + 32px)`,
+        height: `calc(${cardH} + 32px)`,
         touchAction: 'none',
         transformStyle: 'preserve-3d',
         '--card-perspective': '700px',
@@ -195,8 +184,8 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
           style={{
             '--i': (displayIndex + 1).toString(),
             zIndex: imageList.length - displayIndex,
-            width: effectiveWidth,
-            height: effectiveHeight,
+            width: cardW,
+            height: cardH,
             transform: `perspective(var(--card-perspective))
                        translateZ(calc(-1 * var(--card-z-offset) * var(--i)))
                        translateY(calc(var(--card-y-offset) * var(--i)))
@@ -204,10 +193,12 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
                        rotateY(var(--swipe-rotate, 0deg))`
           } as React.CSSProperties}
         >
-          <img
+          <Image
             src={imageList[originalIndex]}
             alt={`Active Covers installation ${originalIndex + 1}`}
-            className="w-full h-full object-cover select-none pointer-events-none"
+            fill
+            sizes={`(max-width: ${cardWidth + 48}px) calc(100vw - 48px), ${cardWidth}px`}
+            className="object-cover select-none pointer-events-none"
             draggable={false}
           />
         </article>
