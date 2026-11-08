@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
+const VIDEO_SRC = "/cover-video.mp4";
+
 export default function Hero() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -13,46 +15,101 @@ export default function Hero() {
 
     let target = 0;
     let frame = 0;
+    let seekStarted = 0;
+    let cancelled = false;
+    let objectUrl = "";
 
-    // Play then immediately pause — forces browser to buffer & enables seeking
-    video.play()
-      .then(() => {
-        video.pause();
-        video.currentTime = target;
-      })
-      .catch(() => {});
-
-    // Seek at most once per animation frame, and never while the previous
-    // seek is still decoding, so fast scrolling doesn't pile up seeks.
-    const tick = () => {
-      frame = 0;
-      if (video.seeking) {
-        frame = requestAnimationFrame(tick);
-        return;
-      }
-      if (Math.abs(video.currentTime - target) > 1 / 30) {
-        video.currentTime = target;
-      }
-    };
-
-    const handleScroll = () => {
+    const computeTarget = () => {
       const duration = video.duration;
-      if (!duration || isNaN(duration)) return;
-
+      if (!duration || isNaN(duration)) return false;
       const scrolledPast = -section.getBoundingClientRect().top;
       const scrollRange = section.offsetHeight - window.innerHeight;
       const progress = Math.max(0, Math.min(1, scrolledPast / scrollRange));
-
       target = progress * duration;
-      if (!frame) frame = requestAnimationFrame(tick);
+      return true;
     };
 
-    video.addEventListener("loadedmetadata", handleScroll);
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Seek toward the scroll position, one seek at a time. A seek still
+    // unfinished after 500 ms is treated as lost (Safari can drop them when
+    // a tab is suspended) and replaced, so the video can never get stuck.
+    const sync = () => {
+      frame = 0;
+      if (document.hidden || !computeTarget()) return;
+      if (video.seeking && performance.now() - seekStarted < 500) {
+        frame = requestAnimationFrame(sync);
+        return;
+      }
+      if (Math.abs(video.currentTime - target) > 1 / 30) {
+        seekStarted = performance.now();
+        video.currentTime = target;
+      }
+    };
+    const requestSync = () => {
+      if (!frame) frame = requestAnimationFrame(sync);
+    };
+
+    // Safari only paints seeked frames once a video has played, and can lose
+    // that when a tab is put away, so play-then-pause again on the way back.
+    const prime = () => {
+      video.play()
+        .then(() => {
+          video.pause();
+          requestSync();
+        })
+        .catch(() => {});
+    };
+    const onReturn = () => {
+      if (document.hidden) return;
+      prime();
+      requestSync();
+    };
+
+    // Load the whole clip (3 MB) into memory and play it from there, so
+    // scrubbing never waits on the network, and a phone that dropped the
+    // video while the page sat in the background needn't fetch it again.
+    fetch(VIDEO_SRC)
+      .then((r) => {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.blob();
+      })
+      .then((blob) => {
+        if (cancelled) return;
+        objectUrl = URL.createObjectURL(blob);
+        video.src = objectUrl;
+        prime();
+      })
+      .catch(() => {
+        if (cancelled) return;
+        video.src = VIDEO_SRC;
+        prime();
+      });
+
+    // Once a second, put the video back where the scroll says it should be:
+    // Safari can restore a suspended video at a different time (seen jumping
+    // to 18.7 s of 19.3 with the page at the top) without any event.
+    const watchdog = window.setInterval(requestSync, 1000);
+
+    video.addEventListener("loadedmetadata", requestSync);
+    window.addEventListener("scroll", requestSync, { passive: true });
+    document.addEventListener("visibilitychange", onReturn);
+    window.addEventListener("pageshow", onReturn);
+    window.addEventListener("focus", onReturn);
+    // iPhones in Low Power Mode won't start a video until the visitor taps;
+    // the first tap unlocks scrubbing.
+    window.addEventListener("click", prime, { once: true });
+    window.addEventListener("touchend", prime, { once: true, passive: true });
     return () => {
-      video.removeEventListener("loadedmetadata", handleScroll);
-      window.removeEventListener("scroll", handleScroll);
+      cancelled = true;
+      window.clearInterval(watchdog);
+      video.removeEventListener("loadedmetadata", requestSync);
+      window.removeEventListener("scroll", requestSync);
+      document.removeEventListener("visibilitychange", onReturn);
+      window.removeEventListener("pageshow", onReturn);
+      window.removeEventListener("focus", onReturn);
+      window.removeEventListener("click", prime);
+      window.removeEventListener("touchend", prime);
       cancelAnimationFrame(frame);
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, []);
 
@@ -65,7 +122,6 @@ export default function Hero() {
         {/* VIDEO — full background */}
         <video
           ref={videoRef}
-          src="/cover-video.mp4"
           poster="/cover-poster.webp"
           className="absolute inset-0 w-full h-full"
           style={{ objectFit: "cover" }}
