@@ -2,11 +2,42 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+
+const SECTIONS = ["Products", "Gallery", "About", "Contact"];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const onHome = pathname === "/";
+
+  // On the home page, the current link is the section crossing the middle
+  // of the screen; at the hero or the stats bar no section link is lit.
+  const [inView, setInView] = useState<string | null>(null);
+  useEffect(() => {
+    if (!onHome) return;
+    const ids = SECTIONS.map((s) => s.toLowerCase());
+    const visible: Record<string, boolean> = {};
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => { visible[e.target.id] = e.isIntersecting; });
+        setInView(ids.find((id) => visible[id]) ?? null);
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [onHome]);
+  const currentSection = onHome ? inView : null;
+  const financeCurrent = pathname === "/finance";
+
+  const linkColour = (current: boolean) =>
+    current ? "text-[#fcaf3b]" : "text-white/80 hover:text-white";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -35,18 +66,20 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {["Products", "Gallery", "About", "Contact"].map((item) => (
+          {SECTIONS.map((item) => (
             <Link
               key={item}
               href={`/#${item.toLowerCase()}`}
-              className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+              aria-current={currentSection === item.toLowerCase() ? "location" : undefined}
+              className={`text-sm font-medium transition-colors ${linkColour(currentSection === item.toLowerCase())}`}
             >
               {item}
             </Link>
           ))}
           <a
             href="/finance"
-            className="text-sm font-medium text-[#fcaf3b] hover:text-white transition-colors"
+            aria-current={financeCurrent ? "page" : undefined}
+            className={`text-sm font-medium transition-colors ${linkColour(financeCurrent)}`}
           >
             Finance
           </a>
@@ -92,11 +125,12 @@ export default function Navbar() {
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className="md:hidden bg-[#0f1117]/98 backdrop-blur-md px-6 py-6 flex flex-col gap-5 border-t border-white/10 overflow-hidden"
         >
-          {["Products", "Gallery", "About", "Contact"].map((item) => (
+          {SECTIONS.map((item) => (
             <Link
               key={item}
               href={`/#${item.toLowerCase()}`}
-              className="text-white/80 hover:text-white font-medium text-lg"
+              aria-current={currentSection === item.toLowerCase() ? "location" : undefined}
+              className={`font-medium text-lg ${linkColour(currentSection === item.toLowerCase())}`}
               onClick={() => setMenuOpen(false)}
             >
               {item}
@@ -104,14 +138,15 @@ export default function Navbar() {
           ))}
           <a
             href="/finance"
-            className="text-[#fcaf3b] hover:text-white font-medium text-lg"
+            aria-current={financeCurrent ? "page" : undefined}
+            className={`font-medium text-lg ${linkColour(financeCurrent)}`}
             onClick={() => setMenuOpen(false)}
           >
             Finance
           </a>
           <a
             href="tel:1300502650"
-            className="text-[#fcaf3b] font-medium text-lg"
+            className="text-white/80 hover:text-white font-medium text-lg"
           >
             1300 50 26 50
           </a>
