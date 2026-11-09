@@ -45,8 +45,8 @@ export default function WarrantyPage() {
         <div className="bg-[#fcaf3b]/10 border-b border-[#fcaf3b]/20 px-6 py-10">
           <div className="max-w-3xl mx-auto grid sm:grid-cols-3 gap-6">
             {[
-              { years: "Years 1–2", coverage: "100%", label: "Full parts & labour" },
-              { years: "Years 3–5", coverage: "50%", label: "Parts & labour" },
+              { years: "Years 1 to 2", coverage: "100%", label: "Full parts & labour" },
+              { years: "Years 3 to 5", coverage: "50%", label: "Parts & labour" },
               { years: "Electrical", coverage: "OEM", label: "Original manufacturer warranty" },
             ].map((c) => (
               <div key={c.years} className="rounded-2xl bg-white border border-[#fcaf3b]/30 p-6 text-center">
@@ -115,7 +115,7 @@ export default function WarrantyPage() {
           <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6">
             <h2 className="font-bold text-base text-[#0f1117] mb-3">Disclaimers</h2>
             <p className="text-sm text-gray-500 leading-relaxed">
-              Active Covers Australia Pty Ltd and its representatives shall not be liable for any injury, loss, cost, or other damage — whether incidental, consequential, or economic — arising out of any defect covered by this Limited Warranty, including loss of use of the spa or spa cover, business interruption, or costs for removal or reinstallation. The liability of Active Covers Australia Pty Ltd under this warranty, if any, shall not exceed the original amount paid for the defective product. Any dispute pertaining to this warranty shall be resolved through binding arbitration or mediation in the state of NSW and subject to its laws.
+              Active Covers Australia Pty Ltd and its representatives shall not be liable for any injury, loss, cost, or other damage, whether incidental, consequential, or economic, arising out of any defect covered by this Limited Warranty, including loss of use of the spa or spa cover, business interruption, or costs for removal or reinstallation. The liability of Active Covers Australia Pty Ltd under this warranty, if any, shall not exceed the original amount paid for the defective product. Any dispute pertaining to this warranty shall be resolved through binding arbitration or mediation in the state of NSW and subject to its laws.
             </p>
           </div>
 

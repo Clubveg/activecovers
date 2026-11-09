@@ -10,10 +10,11 @@ interface ImageSwiperProps {
   className?: string;
 }
 
-// A flick tosses the front photo aside (OUT_MS), then drops it behind the
-// stack and slides it home underneath while every other photo steps forward
-// one place (BACK_MS).
-const OUT_MS = 220;
+// A flick tosses the front photo right out past the side of the stack
+// (OUT_MS), then drops it behind and slides it home underneath while every
+// other photo steps forward one place (BACK_MS). It must clear the stack
+// before it drops, or it vanishes behind the others mid-photo.
+const OUT_MS = 300;
 const BACK_MS = 460;
 const FLICK_PX = 50;                          // drag distance that counts as a flick
 const OUT_EASE = 'cubic-bezier(0.2, 0.7, 0.3, 1)';
@@ -69,9 +70,10 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
 
     busyUntil.current = performance.now() + OUT_MS + BACK_MS / 2;
 
-    // 1. Toss it aside, still on top of the stack.
+    // 1. Toss it out past the side of the stack, still on top. 1.1 widths
+    //    plus a gap clears the stack even with the 8 degree tilt.
     el.style.transition = `transform ${OUT_MS}ms ${OUT_EASE}`;
-    setSwipe(el, dir * el.offsetWidth * 0.7, dir * 8);
+    setSwipe(el, dir * (el.offsetWidth * 1.1 + 16), dir * 8);
 
     // 2. Drop it behind the others and slide it home at the back.
     window.setTimeout(() => {

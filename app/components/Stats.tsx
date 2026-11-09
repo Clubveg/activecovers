@@ -30,7 +30,7 @@ const stats = [
         <path d="M12 6v6l4 2" />
       </svg>
     ),
-    value: "6 Week Turnaround",
+    value: "8 Weeks Turnaround",
     label: "From order to install",
   },
   {
@@ -41,7 +41,7 @@ const stats = [
       </svg>
     ),
     value: "Australian Made",
-    label: "Manufactured in Sydney",
+    label: "Designed and Manufactured in Australia",
   },
   {
     icon: (

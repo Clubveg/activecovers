@@ -58,7 +58,7 @@ export default function OperatingProcedurePage() {
                   "Keep all people clear of the cover during operation.",
                   "Ensure the spa or pool is empty of people before closing the cover.",
                   "Check for overhead obstructions before operating.",
-                  "Observe the duty cycle — allow 15 minutes before closing the cover, with a maximum of 2 cycles per hour.",
+                  "Observe the duty cycle: allow 15 minutes before closing the cover, with a maximum of 2 cycles per hour.",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-sm text-gray-600 leading-relaxed">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#fcaf3b] flex-shrink-0 mt-1.5" />
@@ -85,7 +85,7 @@ export default function OperatingProcedurePage() {
                 {[
                   "Use the wall-mounted switch or remote control to begin opening.",
                   "Monitor the operation closely and listen for any unusual sounds or resistance.",
-                  "Operate slowly and steadily — do not rush the mechanism.",
+                  "Operate slowly and steadily. Do not rush the mechanism.",
                   "Never leave the cover unattended during operation.",
                 ].map((item, i) => (
                   <li key={item} className="flex items-start gap-4 text-sm text-gray-600 leading-relaxed">
@@ -105,7 +105,7 @@ export default function OperatingProcedurePage() {
                 {[
                   "Verify that no person remains inside the spa or pool before closing.",
                   "Observe the cover's movement throughout the full closing cycle and watch for malfunctions.",
-                  "Maintain slow, steady operation — do not force or rush the mechanism.",
+                  "Maintain slow, steady operation. Do not force or rush the mechanism.",
                 ].map((item, i) => (
                   <li key={item} className="flex items-start gap-4 text-sm text-gray-600 leading-relaxed">
                     <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#0f1117] text-white text-xs font-bold flex items-center justify-center mt-0.5">

@@ -83,7 +83,7 @@ export default function Footer() {
               </li>
               <li>
                 <span className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
-                  Mon – Fri, Business Hours
+                  Mon to Fri, Business Hours
                 </span>
               </li>
             </ul>

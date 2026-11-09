@@ -8,9 +8,9 @@ const bifold = {
   tag: "Most Popular",
   image: "/bifold-2.jpg",
   description:
-    "Our signature product. The bi-fold design opens effortlessly with a hydraulic assist, folding neatly back to give you full, unobstructed access to your swim spa — while blending seamlessly into your deck.",
+    "Our signature product. The bi-fold design opens effortlessly on hydraulic cylinders, folding neatly back to give you full, unobstructed access to your swim spa while blending seamlessly into your deck.",
   features: [
-    "Hydraulic gas strut mechanism",
+    "Hydraulic cylinder mechanism",
     "Suitable for Spas and Pools",
     "Custom sizing available",
     "Flush-fit deck integration",

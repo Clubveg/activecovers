@@ -113,7 +113,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide">Hours</p>
-                  <p className="font-bold text-[#0f1117]">Monday – Friday</p>
+                  <p className="font-bold text-[#0f1117]">Monday to Friday</p>
                 </div>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function Contact() {
                   </svg>
                 </div>
                 <h3 className="font-bold text-xl text-[#0f1117]">Quote request sent!</h3>
-                <p className="text-gray-500 text-sm max-w-xs">Thanks — we&apos;ll be in touch within one business day with a tailored quote.</p>
+                <p className="text-gray-500 text-sm max-w-xs">Thanks, we&apos;ll be in touch within one business day with a tailored quote.</p>
                 <button
                   onClick={() => setStatus("idle")}
                   className="text-sm font-bold text-[#fcaf3b] underline underline-offset-2 mt-2"
@@ -260,7 +260,7 @@ export default function Contact() {
 
                 {status === "error" && (
                   <p role="alert" className="text-sm text-red-700 text-center">
-                    Something went wrong — please try again or call us directly.
+                    Something went wrong. Please try again or call us directly.
                   </p>
                 )}
 

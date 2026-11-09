@@ -50,13 +50,13 @@ const reasons = [
   {
     title: "Hydraulic Precision",
     description:
-      "Our hydraulic gas strut mechanism means the cover opens and closes with minimal effort — even in tight spaces.",
+      "Hydraulic cylinders open and close the cover smoothly at the press of a button, even in tight spaces.",
     icon: "hydraulic",
   },
   {
     title: "5 Year Warranty",
     description:
-      "We back every cover with a comprehensive 5-year warranty. 100% coverage for the first 2 years, 50% years 3–5.",
+      "We back every cover with a comprehensive 5-year warranty. 100% coverage for the first 2 years, 50% for years 3 to 5.",
     icon: "warranty",
   },
   {
@@ -72,9 +72,9 @@ const reasons = [
     icon: "manager",
   },
   {
-    title: "Fast 6 Week Turnaround",
+    title: "Fast 8 Weeks Turnaround",
     description:
-      "We know you can't wait to enjoy your spa. Our efficient Sydney manufacturing gets your cover to you in just 6 weeks.",
+      "We know you can't wait to enjoy your spa. Our efficient Sydney manufacturing gets your cover to you in just 8 weeks.",
     icon: "turnaround",
   },
 ];
