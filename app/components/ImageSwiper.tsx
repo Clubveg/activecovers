@@ -10,17 +10,20 @@ interface ImageSwiperProps {
   className?: string;
 }
 
-// A flick turns the front photo over on a hinge at the edge it was flicked
-// towards (left edge for a left flick, right edge for a right flick): it
-// swings back into the page until it is edge-on at that side of the stack
-// (OUT_MS), drops behind the others there, unseen, and swings flat at the
-// back while every other photo steps forward one place (BACK_MS).
-const OUT_MS = 300;
-const BACK_MS = 440;
-const FLICK_PX = 50;                          // drag distance that counts as a flick
-const FLIP_DEG = 90;                          // edge-on
-const OUT_EASE = 'cubic-bezier(0.35, 0.1, 0.6, 1)';
-const BACK_EASE = 'cubic-bezier(0.25, 0.6, 0.3, 1)';
+// A shuffle, always at the left edge of the stack.
+// Drag left: the front photo slides to the left edge, tucks under the stack
+// there and settles at the back; the photo below comes to the front.
+// Drag right: the reverse. The photo last sent to the back slides out from
+// under the left edge, comes on top there and settles at the front.
+// The photo changes layer at PARK widths to the left, where it only just
+// overlaps the stack, so the swap happens at the edge, not mid-photo.
+const OUT_MS = 260;
+const BACK_MS = 420;
+const FLICK_PX = 50;                          // drag distance that counts as a shuffle
+const PARK = 0.92;
+const TILT = 3;                               // degrees, a hand-held feel
+const OUT_EASE = 'cubic-bezier(0.2, 0.7, 0.3, 1)';
+const BACK_EASE = 'cubic-bezier(0.45, 0, 0.2, 1)';
 
 export const ImageSwiper: React.FC<ImageSwiperProps> = ({
   images,
@@ -50,42 +53,56 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
   const busyUntil = useRef(0);
   const animToken = useRef(0);
 
-  // Turn a card by `deg` on the hinge at its left (dir -1) or right (dir 1)
-  // edge, far side going back into the page.
-  const setFlip = (el: HTMLElement, dir: number, deg: number) => {
-    el.style.setProperty('--hinge', `${dir * el.offsetWidth / 2}px`);
-    el.style.setProperty('--flip', `${-dir * deg}deg`);
+  const setSwipe = (el: HTMLElement, x: number, tilt: number) => {
+    el.style.setProperty('--swipe-x', `${x}px`);
+    el.style.setProperty('--swipe-tilt', `${tilt}deg`);
   };
 
-  const toss = useCallback((dir: number) => {
+  const shuffle = useCallback((dir: number) => {
     drag.current = null;
-    const el = cardRefs.current[orderRef.current[0]];
-    if (!el) return;
+    const o = orderRef.current;
+    const forward = dir < 0;
+    const front = cardRefs.current[o[0]];
+    const el = forward ? front : cardRefs.current[o[o.length - 1]];
+    if (!el || !front) return;
     const token = ++animToken.current;
-    const toBack = () => setOrder(o => [...o.slice(1), o[0]]);
+    const reorder = () => setOrder(o => forward
+      ? [...o.slice(1), o[0]]
+      : [o[o.length - 1], ...o.slice(0, -1)]);
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      el.style.transition = 'none';
-      setFlip(el, dir, 0);
-      toBack();
-      requestAnimationFrame(() => { el.style.transition = ''; });
+      front.style.transition = 'none';
+      setSwipe(front, 0, 0);
+      reorder();
+      requestAnimationFrame(() => { front.style.transition = ''; });
       return;
     }
 
     busyUntil.current = performance.now() + OUT_MS + BACK_MS / 2;
 
-    // 1. Swing it back on the hinge until it is edge-on at the side of the stack.
-    el.style.transition = `transform ${OUT_MS}ms ${OUT_EASE}`;
-    setFlip(el, dir, FLIP_DEG);
+    // Going back, the front photo was only nudged by the drag: settle it.
+    if (!forward) {
+      front.style.transition = `transform 200ms ${BACK_EASE}`;
+      setSwipe(front, 0, 0);
+      window.setTimeout(() => {
+        if (token === animToken.current) front.style.transition = '';
+      }, 200);
+    }
 
-    // 2. Edge-on, drop it behind the others and swing it flat at the back.
+    // 1. Slide to the left edge of the stack on its own layer (on top going
+    //    forward, underneath going back).
+    el.style.transition = `transform ${OUT_MS}ms ${OUT_EASE}`;
+    setSwipe(el, -el.offsetWidth * PARK, -TILT);
+
+    // 2. Change layer there and slide home (to the back going forward, to
+    //    the front going back).
     window.setTimeout(() => {
       if (token !== animToken.current) return;
-      el.style.zIndex = '0';
-      el.style.setProperty('--i', String(count));
+      el.style.zIndex = forward ? '0' : String(count + 1);
+      el.style.setProperty('--i', forward ? String(count) : '1');
       el.style.transition = `transform ${BACK_MS}ms ${BACK_EASE}, filter ${BACK_MS}ms ease`;
-      setFlip(el, dir, 0);
-      toBack();
+      setSwipe(el, 0, 0);
+      reorder();
       window.setTimeout(() => {
         if (token === animToken.current) el.style.transition = '';
       }, BACK_MS);
@@ -109,9 +126,10 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
       const d = drag.current;
       if (!d || e.pointerId !== d.id) return;
       const dx = e.clientX - d.startX;
-      const dir = dx < 0 ? -1 : 1;
-      setFlip(d.el, dir, Math.min(Math.abs(dx) / d.el.offsetWidth, 1) * FLIP_DEG);
-      if (Math.abs(dx) > FLICK_PX) toss(dir);
+      // left: the front photo follows the finger; right: it only gives a little
+      if (dx < 0) setSwipe(d.el, dx, Math.max(dx * 0.06, -TILT));
+      else setSwipe(d.el, dx * 0.3, 0);
+      if (Math.abs(dx) > FLICK_PX) shuffle(dx < 0 ? -1 : 1);
     };
     // Let go before a flick: spring back into place.
     const up = (e: PointerEvent) => {
@@ -119,8 +137,8 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
       if (!d || e.pointerId !== d.id) return;
       drag.current = null;
       const token = ++animToken.current;
-      d.el.style.transition = `transform 250ms ${BACK_EASE}`;
-      d.el.style.setProperty('--flip', '0deg');
+      d.el.style.transition = `transform 250ms ${OUT_EASE}`;
+      setSwipe(d.el, 0, 0);
       window.setTimeout(() => {
         if (token === animToken.current) d.el.style.transition = '';
       }, 250);
@@ -136,7 +154,7 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
       stack.removeEventListener('pointerup', up);
       stack.removeEventListener('pointercancel', up);
     };
-  }, [toss]);
+  }, [shuffle]);
 
   return (
     <section
@@ -172,9 +190,8 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
               transform: `perspective(var(--card-perspective))
                          translateZ(calc(-1 * var(--card-z-offset) * var(--i)))
                          translateY(calc(var(--card-y-offset) * var(--i)))
-                         translateX(var(--hinge, 0px))
-                         rotateY(var(--flip, 0deg))
-                         translateX(calc(-1 * var(--hinge, 0px)))`
+                         translateX(var(--swipe-x, 0px))
+                         rotate(var(--swipe-tilt, 0deg))`
             } as React.CSSProperties}
           >
             <Image
