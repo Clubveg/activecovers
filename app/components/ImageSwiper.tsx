@@ -10,18 +10,17 @@ interface ImageSwiperProps {
   className?: string;
 }
 
-// Drag left = forward: the front photo goes out past the left of the stack
-// (OUT_MS), drops behind and slides home underneath while every other photo
-// steps forward one place (BACK_MS).
-// Drag right = backward: the photo at the back slides out past the right of
-// the stack, comes up on top and slides home in front.
-// Either way it clears the stack before it changes layer, or it would vanish
-// behind (or pop over) the others mid-photo.
+// A flick turns the front photo over on a hinge at the edge it was flicked
+// towards (left edge for a left flick, right edge for a right flick): it
+// swings back into the page until it is edge-on at that side of the stack
+// (OUT_MS), drops behind the others there, unseen, and swings flat at the
+// back while every other photo steps forward one place (BACK_MS).
 const OUT_MS = 300;
-const BACK_MS = 460;
+const BACK_MS = 440;
 const FLICK_PX = 50;                          // drag distance that counts as a flick
-const OUT_EASE = 'cubic-bezier(0.2, 0.7, 0.3, 1)';
-const BACK_EASE = 'cubic-bezier(0.45, 0, 0.2, 1)';
+const FLIP_DEG = 90;                          // edge-on
+const OUT_EASE = 'cubic-bezier(0.35, 0.1, 0.6, 1)';
+const BACK_EASE = 'cubic-bezier(0.25, 0.6, 0.3, 1)';
 
 export const ImageSwiper: React.FC<ImageSwiperProps> = ({
   images,
@@ -51,55 +50,42 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
   const busyUntil = useRef(0);
   const animToken = useRef(0);
 
-  const setSwipe = (el: HTMLElement, x: number, tilt: number) => {
-    el.style.setProperty('--swipe-x', `${x}px`);
-    el.style.setProperty('--swipe-tilt', `${tilt}deg`);
+  // Turn a card by `deg` on the hinge at its left (dir -1) or right (dir 1)
+  // edge, far side going back into the page.
+  const setFlip = (el: HTMLElement, dir: number, deg: number) => {
+    el.style.setProperty('--hinge', `${dir * el.offsetWidth / 2}px`);
+    el.style.setProperty('--flip', `${-dir * deg}deg`);
   };
 
   const toss = useCallback((dir: number) => {
     drag.current = null;
-    const o = orderRef.current;
-    const forward = dir < 0;
-    const front = cardRefs.current[o[0]];
-    const el = forward ? front : cardRefs.current[o[o.length - 1]];
-    if (!el || !front) return;
+    const el = cardRefs.current[orderRef.current[0]];
+    if (!el) return;
     const token = ++animToken.current;
-    const reorder = () => setOrder(o => forward
-      ? [...o.slice(1), o[0]]
-      : [o[o.length - 1], ...o.slice(0, -1)]);
+    const toBack = () => setOrder(o => [...o.slice(1), o[0]]);
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      front.style.transition = 'none';
-      setSwipe(front, 0, 0);
-      reorder();
-      requestAnimationFrame(() => { front.style.transition = ''; });
+      el.style.transition = 'none';
+      setFlip(el, dir, 0);
+      toBack();
+      requestAnimationFrame(() => { el.style.transition = ''; });
       return;
     }
 
     busyUntil.current = performance.now() + OUT_MS + BACK_MS / 2;
 
-    // Going back, the front photo was only being dragged: spring it home.
-    if (!forward) {
-      front.style.transition = `transform 250ms ${OUT_EASE}`;
-      setSwipe(front, 0, 0);
-      window.setTimeout(() => {
-        if (token === animToken.current) front.style.transition = '';
-      }, 250);
-    }
-
-    // 1. Out past the side of the stack, on its own layer. 1.1 widths plus a
-    //    gap clears the stack even with the 8 degree tilt.
+    // 1. Swing it back on the hinge until it is edge-on at the side of the stack.
     el.style.transition = `transform ${OUT_MS}ms ${OUT_EASE}`;
-    setSwipe(el, dir * (el.offsetWidth * 1.1 + 16), dir * 8);
+    setFlip(el, dir, FLIP_DEG);
 
-    // 2. Change layer (behind going forward, on top going back) and slide home.
+    // 2. Edge-on, drop it behind the others and swing it flat at the back.
     window.setTimeout(() => {
       if (token !== animToken.current) return;
-      el.style.zIndex = forward ? '0' : String(count + 1);
-      el.style.setProperty('--i', forward ? String(count) : '1');
+      el.style.zIndex = '0';
+      el.style.setProperty('--i', String(count));
       el.style.transition = `transform ${BACK_MS}ms ${BACK_EASE}, filter ${BACK_MS}ms ease`;
-      setSwipe(el, 0, 0);
-      reorder();
+      setFlip(el, dir, 0);
+      toBack();
       window.setTimeout(() => {
         if (token === animToken.current) el.style.transition = '';
       }, BACK_MS);
@@ -123,8 +109,9 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
       const d = drag.current;
       if (!d || e.pointerId !== d.id) return;
       const dx = e.clientX - d.startX;
-      setSwipe(d.el, dx, dx * 0.06);
-      if (Math.abs(dx) > FLICK_PX) toss(Math.sign(dx));
+      const dir = dx < 0 ? -1 : 1;
+      setFlip(d.el, dir, Math.min(Math.abs(dx) / d.el.offsetWidth, 1) * FLIP_DEG);
+      if (Math.abs(dx) > FLICK_PX) toss(dir);
     };
     // Let go before a flick: spring back into place.
     const up = (e: PointerEvent) => {
@@ -132,8 +119,8 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
       if (!d || e.pointerId !== d.id) return;
       drag.current = null;
       const token = ++animToken.current;
-      d.el.style.transition = `transform 250ms ${OUT_EASE}`;
-      setSwipe(d.el, 0, 0);
+      d.el.style.transition = `transform 250ms ${BACK_EASE}`;
+      d.el.style.setProperty('--flip', '0deg');
       window.setTimeout(() => {
         if (token === animToken.current) d.el.style.transition = '';
       }, 250);
@@ -160,7 +147,6 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
         height: `calc(${cardH} + 32px)`,
         // vertical swipes still scroll the page; horizontal ones flick photos
         touchAction: 'pan-y',
-        transformStyle: 'preserve-3d',
         '--card-perspective': '700px',
         '--card-z-offset': '12px',
         '--card-y-offset': '7px',
@@ -186,8 +172,9 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
               transform: `perspective(var(--card-perspective))
                          translateZ(calc(-1 * var(--card-z-offset) * var(--i)))
                          translateY(calc(var(--card-y-offset) * var(--i)))
-                         translateX(var(--swipe-x, 0px))
-                         rotate(var(--swipe-tilt, 0deg))`
+                         translateX(var(--hinge, 0px))
+                         rotateY(var(--flip, 0deg))
+                         translateX(calc(-1 * var(--hinge, 0px)))`
             } as React.CSSProperties}
           >
             <Image
