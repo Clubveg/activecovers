@@ -10,10 +10,13 @@ interface ImageSwiperProps {
   className?: string;
 }
 
-// A flick tosses the front photo right out past the side of the stack
-// (OUT_MS), then drops it behind and slides it home underneath while every
-// other photo steps forward one place (BACK_MS). It must clear the stack
-// before it drops, or it vanishes behind the others mid-photo.
+// Drag left = forward: the front photo goes out past the left of the stack
+// (OUT_MS), drops behind and slides home underneath while every other photo
+// steps forward one place (BACK_MS).
+// Drag right = backward: the photo at the back slides out past the right of
+// the stack, comes up on top and slides home in front.
+// Either way it clears the stack before it changes layer, or it would vanish
+// behind (or pop over) the others mid-photo.
 const OUT_MS = 300;
 const BACK_MS = 460;
 const FLICK_PX = 50;                          // drag distance that counts as a flick
@@ -55,34 +58,48 @@ export const ImageSwiper: React.FC<ImageSwiperProps> = ({
 
   const toss = useCallback((dir: number) => {
     drag.current = null;
-    const el = cardRefs.current[orderRef.current[0]];
-    if (!el) return;
+    const o = orderRef.current;
+    const forward = dir < 0;
+    const front = cardRefs.current[o[0]];
+    const el = forward ? front : cardRefs.current[o[o.length - 1]];
+    if (!el || !front) return;
     const token = ++animToken.current;
-    const toBack = () => setOrder(o => [...o.slice(1), o[0]]);
+    const reorder = () => setOrder(o => forward
+      ? [...o.slice(1), o[0]]
+      : [o[o.length - 1], ...o.slice(0, -1)]);
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      el.style.transition = 'none';
-      setSwipe(el, 0, 0);
-      toBack();
-      requestAnimationFrame(() => { el.style.transition = ''; });
+      front.style.transition = 'none';
+      setSwipe(front, 0, 0);
+      reorder();
+      requestAnimationFrame(() => { front.style.transition = ''; });
       return;
     }
 
     busyUntil.current = performance.now() + OUT_MS + BACK_MS / 2;
 
-    // 1. Toss it out past the side of the stack, still on top. 1.1 widths
-    //    plus a gap clears the stack even with the 8 degree tilt.
+    // Going back, the front photo was only being dragged: spring it home.
+    if (!forward) {
+      front.style.transition = `transform 250ms ${OUT_EASE}`;
+      setSwipe(front, 0, 0);
+      window.setTimeout(() => {
+        if (token === animToken.current) front.style.transition = '';
+      }, 250);
+    }
+
+    // 1. Out past the side of the stack, on its own layer. 1.1 widths plus a
+    //    gap clears the stack even with the 8 degree tilt.
     el.style.transition = `transform ${OUT_MS}ms ${OUT_EASE}`;
     setSwipe(el, dir * (el.offsetWidth * 1.1 + 16), dir * 8);
 
-    // 2. Drop it behind the others and slide it home at the back.
+    // 2. Change layer (behind going forward, on top going back) and slide home.
     window.setTimeout(() => {
       if (token !== animToken.current) return;
-      el.style.zIndex = '0';
-      el.style.setProperty('--i', String(count));
+      el.style.zIndex = forward ? '0' : String(count + 1);
+      el.style.setProperty('--i', forward ? String(count) : '1');
       el.style.transition = `transform ${BACK_MS}ms ${BACK_EASE}, filter ${BACK_MS}ms ease`;
       setSwipe(el, 0, 0);
-      toBack();
+      reorder();
       window.setTimeout(() => {
         if (token === animToken.current) el.style.transition = '';
       }, BACK_MS);
