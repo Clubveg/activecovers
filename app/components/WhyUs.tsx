@@ -50,19 +50,19 @@ const reasons = [
   {
     title: "Hydraulic Precision",
     description:
-      "Hydraulic cylinders open and close the cover smoothly at the press of a button, even in tight spaces.",
+      "Our hydraulic mechanism means the cover opens and closes with minimal effort, even in tight spaces.",
     icon: "hydraulic",
   },
   {
     title: "5 Year Warranty",
     description:
-      "We back every cover with a comprehensive 5-year warranty. 100% coverage for the first 2 years, 50% for years 3 to 5.",
+      "We back every cover with a comprehensive 5-year warranty for a complete peace of mind.",
     icon: "warranty",
   },
   {
     title: "30+ Years Experience",
     description:
-      "Founded in 1992 by Yacoub and his son Sam, Active Covers has been perfecting the swim spa cover for over three decades.",
+      "Founded in 1992 by Jacob and his son Sam, Active Covers has been perfecting the spa cover for over three decades.",
     icon: "experience",
   },
   {
